@@ -1,150 +1,120 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="content-type" content="text/html; charset=utf-8">
-<base href="http://www.fightcodegame.com">
-<title>FightCode - Killing Robots for Fun</title>
-<link href='http://fonts.googleapis.com/css?family=Oswald:400,300,700' rel='stylesheet' type='text/css'>
-<link rel="stylesheet" href="/static/output/fightcode.min.css?v=fdfa8" type="text/css">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>Blablah</title>
+  <link href='http://fonts.googleapis.com/css?family=Oswald:400,300,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="http://www.fightcodegame.com/static/output/fightcode.min.css?v=fdfa8" type="text/css">
 </head>
 <body>
 
 
-<div class="fight-arena">
-<div class="match">
+  <div class="fight-arena">
+    <div class="match">
 
-<div class="board"></div>
+      <div class="board"></div>
 
-<a href="#replay" class="replay">replay</a>
+      <a href="#replay" class="replay">replay</a>
 
 
-</div>
-</div>
+    </div>
+  </div>
 
-<script>
-document.workerURL = "file:///home/fvichot/dev/js-robot/fightcode.worker.min.js";
-</script>
+  <script>
+  document.workerURL = "fightcode.worker.min.js";
+  </script>
 
-<script src="/static/output/fightcode.thirdParty.min.js?v=419a6"></script>
-<script src="/static/output/fightcode.engine.min.js?v=32fde"></script>
-<script src="/static/output/fightcode.animation.min.js?v=ddb4c"></script>
-<script src="/static/output/fightcode.webApp.min.js?v=4ebf5"></script>
+  <script src="http://www.fightcodegame.com/static/output/fightcode.thirdParty.min.js?v=419a6"></script>
+  <script src="http://www.fightcodegame.com/static/output/fightcode.engine.min.js?v=32fde"></script>
+  <script src="http://www.fightcodegame.com/static/output/fightcode.animation.min.js?v=ddb4c"></script>
+  <script src="http://www.fightcodegame.com/static/output/fightcode.webApp.min.js?v=4ebf5"></script>
 
-<script type="robot/script" id="robot-8048-code">
-"use strict";
-var found=false;var test=true;var fire=true;var lastAngle=5360;var pos={x:0,y:0};var father=0;var back=false;var incr=10;var incr2=true;var Robot=function(a){father=a.id;a.clone();a.turn(180);};Robot.prototype.onIdle=function(a){var b=a.robot;if(found==true)if(!incr2)b.back(1);else b.ahead(1);var c=pos.x-b.position.x;var d=pos.y-b.position.y;lastAngle=Math.round(angleToDegree(Math.acos(-c/(Math.sqrt(c*c+d*d)))));if(d>0)lastAngle=360-lastAngle;if(found){if(lastAngle!=b.cannonAbsoluteAngle){var e=1;if(b.cannonAbsoluteAngle<lastAngle)if(lastAngle-b.cannonAbsoluteAngle>180)e=-1;else e=1;else if(b.cannonAbsoluteAngle-lastAngle>180)e=1;else e=-1;b.rotateCannon(e);if(Math.abs(lastAngle-b.cannonAbsoluteAngle)<50)fatherFire(b);}else{fatherFire(b);b.rotateCannon(incr);incr=-incr;fatherFire(b);}}else if(b.id==father)b.rotateCannon(1);else b.rotateCannon(-1);};function fatherFire(a){a.fire(a);}function angleToDegree(a){return a*180/Math.PI;}function degreeToRadian(a){return a*Math.PI/180;}Robot.prototype.onScannedRobot=function(a){var b=a.robot;var c=a.scannedRobot;if((b.parentId==c.id)||(c.parentId==b.id))return;fatherFire(b);pos=c.position;var d=c.position.x-b.position.x;var e=c.position.y-b.position.y;var f=Math.sqrt(d*d+e*e);var g=Math.acos(-d/f);found=true;if(f<=400)incr=10;if(f<150)incr=5;if(f>400)incr=15;b.fire();};function setPostionToShoot(a){}Robot.prototype.onHitByBullet=function(a){var b;b=a.robot;var c=b.angle+a.bearing;b.disappear();var d=c;if(d<0)d=360+d,d=d%360;pos.x=500*Math.sin(degreeToRadian(d))+b.position.x;pos.y=-500*Math.cos(degreeToRadian(d))+b.position.y;found=true;console.log("shoot"+a.bearing+" "+(Math.abs(a.bearing)%180));if((Math.abs(a.bearing)<30)||((Math.abs(a.bearing)<210)&&(Math.abs(a.bearing)>150))){b.ignore("onWallCollision");b.ignore("onRobotCollision");b.ignore("onHitByBullet");if(Math.abs(a.bearing)>30){b.turn(-30);b.ahead(80);}else{b.turn(30);b.back(80);}b.listen("onWallCollision");b.listen("onRobotCollision");b.listen("onHitByBullet");}else b.ahead(120);};Robot.prototype.onRobotCollision=function(a){var b=a.robot;var c=a.collidedRobot;if((b.parentId==c.id)||(c.parentId==b.id)){}else{found=true;pos=a.collidedRobot.position;}var d=90;if(b.id!=father)d=90;else d=-90;b.ignore("onWallCollision");b.ignore("onRobotCollision");b.back(100);b.turn(-40);b.ahead(200);b.listen("onWallCollision");b.listen("onRobotCollision");};Robot.prototype.onWallCollision=function(a){var b=a.robot;var c=-90;b.turn(a.bearing+c);};
-</script>
-<script type="robot/script" id="robot-7254-code">
-"use strict";
-var count=0;var savedEnemyLife=0;var turnDirections=1;var Robot=function(a){a.clone();a.turnLeft(a.angle%90);};Robot.prototype.onIdle=function(a){var b=a.robot;if(b.parentId){b.ahead(1*turnDirections);b.turnGunRight(1*turnDirections);}else{b.ahead(-1*turnDirections);b.turnGunLeft(1*turnDirections);}};Robot.prototype.onWallCollision=function(a){var b=a.robot;if(!b.parentId)b.turnRight(a.bearing-90);else b.turnRight(a.bearing+90);};Robot.prototype.onRobotCollision=function(a){var b=a.robot,c=a.collidedRobot;b.ignore('onRobotCollision');if(a.bearing>-90&&a.bearing<90)b.back(100);else b.ahead(100);if(b.id!=c.parentId&&b.parentId!=c.id){b.turnGunRight(a.bearing-b.cannonRelativeAngle);b.turnGunLeft(a.bearing-b.cannonRelativeAngle);}b.listen('onRobotCollision');};Robot.prototype.onHitByBullet=function(a){var b;b=a.robot;b.ahead(120-b.life);};Robot.prototype.onScannedRobot=function(a){var b=a.robot,c=a.scannedRobot;if(b.id==c.parentId||b.parentId==c.id)return;if(count>5){count=0;b.log('5 miss');if(b.parentId)b.turnGunRight(7);else b.turnGunLeft(7);}b.fire();if(savedEnemyLife==c.life)count+=1;else count=0;savedEnemyLife=c.life;if(b.parentId)b.turnGunLeft(30);else b.turnGunRight(30);};
-</script>
-<script>
-(function() {
-var container = $('.fight-arena');
-var robot1Name = decodeURI('BANBAN88_V6');
-var robot2Name = decodeURI('T3%40M++-+Docti');
-var robot1Code = $('#robot-8048-code').html();
-var robot2Code = $('#robot-7254-code').html();
-var robot1Life = $('.left .life .filled');
-var robot2Life = $('.right .life .filled');
-var onRound = function(round) {
-for (var i=0; i<round.objects.length; i++) {
-var obj = round.objects[i];
-if (obj.name == robot1Name && !obj.isClone) {
-robot1Life.css('width', obj.life + '%');
-}
-if (obj.name == robot2Name && !obj.isClone) {
-robot2Life.css('width', obj.life + '%');
-}
-}
+  <script>
+  (function() {
+   var container = $('.fight-arena');
+   var robot1Name = decodeURI('BANBAN88_V6');
+   var robot2Name = decodeURI('T3%40M++-+Docti');
+   var robot1Code = $.ajax({async:false, url:"robot.js"}).responseText;
+   var robot2Code = $.ajax({async:false, url:"enemy.js"}).responseText;
+   var robot1Life = $('.left .life .filled');
+   var robot2Life = $('.right .life .filled');
+   var onRound = function(round) {
+    for (var i=0; i<round.objects.length; i++) {
+     var obj = round.objects[i];
+     if (obj.name == robot1Name && !obj.isClone) {
+      robot1Life.css('width', obj.life + '%');
+    }
+    if (obj.name == robot2Name && !obj.isClone) {
+      robot2Life.css('width', obj.life + '%');
+    }
+  }
 };
 var animatedScrollTo = function(position) {
-$('html, body').animate({
-scrollTop: position
-}, 500);
+  $('html, body').animate({
+   scrollTop: position
+ }, 500);
 };
 var match = $('.match');
 var resultsElement = $('.results');
 var onEndGame = function(result) {
-var lastRound = result.result[result.result.length-1];
-for (var i=0; i<lastRound.objects.length; i++) {
-var obj = lastRound.objects[i];
-if (obj.name != robot1Name && obj.type == 'tank') {
-robot1Life.css('width', '0%');
-}
-if (obj.name != robot2Name && obj.type == 'tank') {
-robot2Life.css('width', '0%');
-}
+  var lastRound = result.result[result.result.length-1];
+  for (var i=0; i<lastRound.objects.length; i++) {
+   var obj = lastRound.objects[i];
+   if (obj.name != robot1Name && obj.type == 'tank') {
+    robot1Life.css('width', '0%');
+  }
+  if (obj.name != robot2Name && obj.type == 'tank') {
+    robot2Life.css('width', '0%');
+  }
 }
 if (resultsElement.length > 0) {
-setTimeout(function() {
-match.animate({
-opacity: 0
-}, {
-duration: 300,
-complete: function() {
-match.css('height', 550);
-resultsElement.fadeIn("fast");
-animatedScrollTo(0);
-}
+ setTimeout(function() {
+  match.animate({
+   opacity: 0
+ }, {
+   duration: 300,
+   complete: function() {
+    match.css('height', 550);
+    resultsElement.fadeIn("fast");
+    animatedScrollTo(0);
+  }
 });
 }, 500);
 }
 }
 var score = $('.score');
 var runGame = function() {
-var goToBoard = function() {
-animatedScrollTo(score.offset().top);
-};
-setTimeout(goToBoard, 100);
-setTimeout(goToBoard, 500);
-setTimeout(goToBoard, 1000);
-setTimeout(goToBoard, 1500);
-var arena = new FightArena(container, [
-{
-name: decodeURI("BANBAN88_V6"),
-code: robot1Code,
-color: '#53c822',
-rectangle: {
-position: {
-x: 509.0,
-y: 192.0
-},
-angle: 162.0
-}
+ var arena = new FightArena(container, [
+ {
+   name: decodeURI("BANBAN88_V6"),
+   code: robot1Code,
+   color: '#53c822',
+   rectangle: {
+    position: {
+     x: 509.0,
+     y: 192.0
+   },
+   angle: 162.0
+ }
 },
 {
-name: decodeURI("T3%40M++-+Docti"),
-code: robot2Code,
-color: '#fff',
-rectangle: {
-position: {
-x: 291.0,
-y: 192.0
-},
-angle: 342.0
+ name: decodeURI("T3%40M++-+Docti"),
+ code: robot2Code,
+ color: '#fff',
+ rectangle: {
+  position: {
+   x: 291.0,
+   y: 192.0
+ },
+ angle: 342.0
 }
 }
 ], onRound, null, {
-onEndGame: onEndGame,
-maxRounds: 12500
+ onEndGame: onEndGame,
+ maxRounds: 12500
 });
 };
 runGame();
-$('.replay').on('click', function(ev) {
-ev.preventDefault();
-resultsElement.fadeOut("fast", function() {
-match.animate({
-opacity: 1
-}, {
-duration: 300,
-complete: function() {
-match.css('height', 'auto');
-runGame();
-}
-});
-});
-});
 }());
 </script>
 
